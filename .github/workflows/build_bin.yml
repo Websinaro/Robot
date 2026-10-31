@@ -1,15 +1,24 @@
 name: Build Firmware
-on: [push, workflow_dispatch] 
+on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: 
+        with:
           python-version: "3.11"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            ~/.cache/pip
+          key: pio-${{ hashFiles('platformio.ini') }}
       - run: pip install platformio
-      - run: pio run
+      - name: Host unit tests
+        run: pio test -e native
+      - name: Build firmware
+        run: pio run -e esp32-s3
       - uses: actions/upload-artifact@v4
         with:
           name: firmware
@@ -17,5 +26,3 @@ jobs:
             .pio/build/esp32-s3/bootloader.bin
             .pio/build/esp32-s3/partitions.bin
             .pio/build/esp32-s3/firmware.bin
-        
-
