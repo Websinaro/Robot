@@ -19,6 +19,9 @@ const EmotionProfile kProfiles[] = {
   {"SPEAKING",  0x07FF,  95,  0,   0,  0, MouthShape::TALK,      true,  true },
   {"SEARCHING", 0xFD20,  90,  0,   0, -3, MouthShape::FLAT,      true,  true },
   {"ERROR",     0xF800,  80, -1,   0,  0, MouthShape::WAVY,      false, false},
+  {"PLAYFUL",   0xF81F,  95,  0,   3, -2, MouthShape::BIG_SMILE, true,  true },
+  {"FRUSTRATED",0xFBE0,  75,  1,   0,  0, MouthShape::WAVY,      true,  false},
+  {"OFFLINE",   0x7BEF,  70, -1,   0,  2, MouthShape::SMALL,     true,  false},
   {"IDLE",      0x07FF,  90,  0,   0,  0, MouthShape::SMILE,     true,  true },
 };
 
@@ -34,6 +37,13 @@ bool equalsIgnoreCase(const char* a, const char* b) {
   }
   return *a == *b;
 }
+
+struct Alias { const char* name; Emotion emotion; };
+const Alias kAliases[] = {
+  {"neutral", Emotion::IDLE},  {"calm", Emotion::IDLE},
+  {"funny", Emotion::PLAYFUL}, {"joy", Emotion::HAPPY},
+  {"joyful", Emotion::HAPPY},  {"annoyed", Emotion::FRUSTRATED},
+};
 
 }  // namespace
 
@@ -55,4 +65,15 @@ bool emotionFromName(const char* name, Emotion& out) {
   return false;
 }
 
+}  // namespace weby
+
+namespace weby {
+Emotion emotionFromServer(const char* name) {
+  Emotion e = Emotion::IDLE;
+  if (!name) return e;
+  if (emotionFromName(name, e)) return e;
+  for (unsigned i = 0; i < sizeof(kAliases) / sizeof(kAliases[0]); ++i)
+    if (equalsIgnoreCase(name, kAliases[i].name)) return kAliases[i].emotion;
+  return Emotion::IDLE;
+}
 }  // namespace weby

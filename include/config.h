@@ -1,6 +1,11 @@
 #pragma once
 #include <stdint.h>
 
+// microSD is OPTIONAL: set -DWEBY_HAS_SD=1 only after the card module is wired and verified.
+#ifndef WEBY_HAS_SD
+#define WEBY_HAS_SD 0
+#endif
+
 namespace weby {
 namespace config {
 

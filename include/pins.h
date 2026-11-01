@@ -15,7 +15,7 @@ constexpr int8_t TFT_MOSI = 5;
 constexpr int8_t TFT_CS   = 6;
 constexpr int8_t TFT_DC   = 7;
 constexpr int8_t TFT_RST  = 15;
-constexpr int8_t TFT_BL   = 1;    // -1 if the backlight is wired straight to 3V3
+constexpr int8_t TFT_BL   = -1;   // -1 = no backlight control (module BL wired to 3V3). Set a GPIO only if you wire BL to it.
 
 // INMP441 microphone (I2S RX) - Phase 2
 constexpr int8_t MIC_SCK = 17;

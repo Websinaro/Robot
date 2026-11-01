@@ -6,7 +6,8 @@ namespace weby {
 
 enum class Emotion : uint8_t {
   HAPPY, EXCITED, CURIOUS, CONFUSED, SAD, SLEEPY, ANGRY, SURPRISED,
-  THINKING, LISTENING, SPEAKING, SEARCHING, ERROR, IDLE,
+  THINKING, LISTENING, SPEAKING, SEARCHING, ERROR,
+  PLAYFUL, FRUSTRATED, OFFLINE, IDLE,
   COUNT
 };
 
@@ -31,5 +32,8 @@ const char* emotionName(Emotion e);
 // Case-insensitive lookup, used for server-provided emotion identifiers.
 // Returns false (and leaves `out` untouched) for unknown names.
 bool emotionFromName(const char* name, Emotion& out);
+// Maps a server emotion string (canonical names plus a few aliases such as
+// "neutral" or "funny"). NEVER fails: unknown or null input falls back to IDLE (neutral).
+Emotion emotionFromServer(const char* name);
 
 }  // namespace weby

@@ -44,6 +44,23 @@ void test_out_of_range_emotion_falls_back_to_idle() {
   TEST_ASSERT_EQUAL_STRING("IDLE", emotionName((Emotion)99));
 }
 
+void test_new_emotions_present() {
+  Emotion e = Emotion::IDLE;
+  TEST_ASSERT_TRUE(emotionFromName("PLAYFUL", e));    TEST_ASSERT_EQUAL_INT((int)Emotion::PLAYFUL, (int)e);
+  TEST_ASSERT_TRUE(emotionFromName("FRUSTRATED", e)); TEST_ASSERT_EQUAL_INT((int)Emotion::FRUSTRATED, (int)e);
+  TEST_ASSERT_TRUE(emotionFromName("OFFLINE", e));    TEST_ASSERT_EQUAL_INT((int)Emotion::OFFLINE, (int)e);
+}
+
+void test_server_mapping_never_fails_and_falls_back_to_neutral() {
+  TEST_ASSERT_EQUAL_INT((int)Emotion::HAPPY, (int)emotionFromServer("happy"));
+  TEST_ASSERT_EQUAL_INT((int)Emotion::HAPPY, (int)emotionFromServer("Joyful"));
+  TEST_ASSERT_EQUAL_INT((int)Emotion::PLAYFUL, (int)emotionFromServer("funny"));
+  TEST_ASSERT_EQUAL_INT((int)Emotion::IDLE, (int)emotionFromServer("neutral"));
+  TEST_ASSERT_EQUAL_INT((int)Emotion::IDLE, (int)emotionFromServer("moonwalking"));
+  TEST_ASSERT_EQUAL_INT((int)Emotion::IDLE, (int)emotionFromServer(""));
+  TEST_ASSERT_EQUAL_INT((int)Emotion::IDLE, (int)emotionFromServer(0));
+}
+
 int main(int, char**) {
   UNITY_BEGIN();
   RUN_TEST(test_every_emotion_has_a_distinct_name_and_sane_profile);
@@ -51,5 +68,7 @@ int main(int, char**) {
   RUN_TEST(test_lookup_by_name_is_case_insensitive);
   RUN_TEST(test_unknown_or_null_name_rejected_and_output_untouched);
   RUN_TEST(test_out_of_range_emotion_falls_back_to_idle);
+  RUN_TEST(test_new_emotions_present);
+  RUN_TEST(test_server_mapping_never_fails_and_falls_back_to_neutral);
   return UNITY_END();
 }
